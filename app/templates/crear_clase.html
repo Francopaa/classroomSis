@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Crear clase{% endblock %}
+
+{% block content %}
+<div style="max-width: 520px; margin: 0 auto;">
+    <div class="page-header">
+        <a href="/" class="btn btn-ghost" style="margin-bottom: 1rem; padding: 6px 12px; font-size: 13px;">← Volver</a>
+        <h1>Crear clase</h1>
+        <p>Configura tu nueva clase y obtén el código de invitación</p>
+    </div>
+
+    <div class="card">
+        <form method="POST" action="/clases">
+            <div class="form-group">
+                <label class="form-label">Nombre de la clase *</label>
+                <input type="text" name="nombre" class="form-input" placeholder="ej. Programación Web 2025" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea name="descripcion" class="form-textarea" placeholder="Describe de qué trata esta clase..."></textarea>
+            </div>
+            <hr class="divider">
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                <a href="/" class="btn btn-ghost">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Crear clase →</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
