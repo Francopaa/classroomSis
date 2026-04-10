@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ clase.nombre }}{% endblock %}
+
+{% block content %}
+<section class="classroom-detail">
+    <h1>{{ clase.nombre }}</h1>
+    <p><strong>Código:</strong> {{ clase.codigo }}</p>
+    <p>{{ clase.descripcion }}</p>
+
+    <hr>
+
+    <h3>Tareas</h3>
+    {% if tareas %}
+        <ul>
+            {% for tarea in tareas %}
+                <li>{{ tarea.titulo }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay tareas todavía.</p>
+    {% endif %}
+</section>
+{% endblock %}
