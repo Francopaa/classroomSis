@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Mis calificaciones — {{ clase.nombre }}{% endblock %}
+
+{% block nav_links %}
+<span style="font-size: 13px; color: var(--text-muted);">{{ clase.nombre }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <a href="/clases/{{ clase.id }}" class="btn btn-ghost" style="margin-bottom: 1rem; padding: 6px 12px; font-size: 13px;">← Volver</a>
+    <h1>Mis calificaciones</h1>
+    <p>{{ clase.nombre }}</p>
+</div>
+
+{% if calificaciones %}
+
+{% set total = namespace(suma=0, count=0) %}
+{% for cal in calificaciones %}
+    {% if cal.nota is not none %}
+        {% set total.suma = total.suma + cal.nota %}
+        {% set total.count = total.count + 1 %}
+    {% endif %}
+{% endfor %}
+
+{% if total.count > 0 %}
+<div class="card" style="margin-bottom: 2rem; display: flex; align-items: center; gap: 2rem;">
+    <div>
+        <div style="font-family: 'Space Mono', monospace; font-size: 36px; font-weight: 700;">
+            {{ "%.1f"|format(total.suma / total.count) }}
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); font-family: 'Space Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase;">Promedio</div>
+    </div>
+    <div style="width: 1px; height: 48px; background: var(--border);"></div>
+    <div>
+        <div style="font-family: 'Space Mono', monospace; font-size: 36px; font-weight: 700;">{{ total.count }}</div>
+        <div style="font-size: 12px; color: var(--text-muted); font-family: 'Space Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase;">Calificadas</div>
+    </div>
+</div>
+{% endif %}
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+    {% for cal in calificaciones %}
+    <div class="card">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;">
+            <div style="flex: 1; min-width: 0;">
+                <h3 style="font-size: 15px; font-weight: 500; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ cal.titulo }}</h3>
+                {% if cal.comentario %}
+                <p style="font-size: 13px; color: var(--text-soft); line-height: 1.6;">{{ cal.comentario }}</p>
+                {% else %}
+                <p style="font-size: 13px; color: var(--text-muted); font-style: italic;">Sin comentario</p>
+                {% endif %}
+            </div>
+            <div style="flex-shrink: 0; text-align: right;">
+                {% if cal.nota is not none %}
+                <div style="font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; line-height: 1;">{{ cal.nota }}</div>
+                <div style="font-size: 11px; color: var(--text-muted); font-family: 'Space Mono', monospace; letter-spacing: 0.05em;">/100</div>
+                {% else %}
+                <span class="badge badge-amber">Sin calificar</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div style="font-size: 36px; margin-bottom: 1rem;">📋</div>
+    <p>Aún no tienes calificaciones<br>en esta clase.</p>
+</div>
+{% endif %}
+{% endblock %}
