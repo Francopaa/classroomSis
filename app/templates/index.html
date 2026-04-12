@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Classroom — Inicio{% endblock %}
+
+{% block nav_links %}
+<a href="/clases/crear" class="btn btn-primary" style="padding: 7px 14px; font-size: 13px;">+ Nueva clase</a>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Mis clases</h1>
+    <p>Gestiona tus clases y accede a las tareas</p>
+</div>
+
+{% if clases %}
+<div class="grid-2">
+    {% for clase in clases %}
+    <a href="/clases/{{ clase.id }}" style="text-decoration: none;">
+        <div class="card" style="cursor: pointer;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 18px;">📚</div>
+                <span class="badge badge-accent">{{ clase.codigo }}</span>
+            </div>
+            <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 4px; color: var(--text);">{{ clase.nombre }}</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">{{ clase.descripcion or 'Sin descripción' }}</p>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div style="font-size: 36px; margin-bottom: 1rem;">🎓</div>
+    <p>No tienes clases aún.<br>Crea una o únete con un código.</p>
+    <div style="display: flex; gap: 8px; justify-content: center; margin-top: 1.5rem;">
+        <a href="/clases/crear" class="btn btn-primary">Crear clase</a>
+        <a href="/clases/unirse" class="btn btn-ghost">Unirse con código</a>
+    </div>
+</div>
+{% endif %}
+
+{% if clases %}
+<div style="margin-top: 1.5rem; display: flex; gap: 8px;">
+    <a href="/clases/crear" class="btn btn-ghost">+ Crear clase</a>
+    <a href="/clases/unirse" class="btn btn-ghost">Unirse con código</a>
+</div>
+{% endif %}
+{% endblock %}

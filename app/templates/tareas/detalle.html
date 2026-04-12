@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ tarea.titulo if tarea else 'Tarea' }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 640px; margin: 0 auto;">
+    <div class="page-header">
+        <a href="/clases/{{ tarea.clase_id if tarea else '#' }}" class="btn btn-ghost" style="margin-bottom: 1rem; padding: 6px 12px; font-size: 13px;">← Volver a la clase</a>
+        <h1>{{ tarea.titulo if tarea else 'Tarea no encontrada' }}</h1>
+        {% if tarea %}
+        <p>Fecha límite: {{ tarea.fecha_limite }}</p>
+        {% endif %}
+    </div>
+
+    {% if tarea %}
+    <div class="card">
+        <p style="color: var(--text-soft); font-size: 14px;">{{ tarea.descripcion or 'Sin descripción.' }}</p>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Esta tarea no existe o fue eliminada.</p>
+        <a href="/" class="btn btn-ghost" style="margin-top: 1rem;">Volver al inicio</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

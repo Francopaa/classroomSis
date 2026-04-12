@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Crear tarea{% endblock %}
+
+{% block content %}
+<div style="max-width: 520px; margin: 0 auto;">
+    <div class="page-header">
+        <a href="/clases/{{ clase.id }}" class="btn btn-ghost" style="margin-bottom: 1rem; padding: 6px 12px; font-size: 13px;">← Volver a la clase</a>
+        <h1>Nueva tarea</h1>
+        <p>Crea una tarea para tus alumnos</p>
+    </div>
+
+    <div class="card">
+        <form method="POST" action="/clases/{{ clase.id }}/tareas">
+            <div class="form-group">
+                <label class="form-label">Título *</label>
+                <input type="text" name="titulo" class="form-input" placeholder="ej. Tarea 1 — Introducción a Flask" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea name="descripcion" class="form-textarea" placeholder="Describe lo que deben entregar los alumnos..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Fecha límite *</label>
+                <input type="datetime-local" name="fecha_limite" class="form-input" required>
+            </div>
+            <hr class="divider">
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                <a href="/clases/{{ clase.id }}" class="btn btn-ghost">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Publicar tarea →</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,29 +1,24 @@
-from flask import Blueprint, request, jsonify
-from app.models.clase import crear_clase, get_clases_profesor, get_clase_by_codigo, unirse_a_clase, get_clases_alumno
+from flask import Blueprint, request, render_template, redirect, url_for
 
 clases_bp = Blueprint('clases', __name__)
 
+@clases_bp.route('/clases/crear', methods=['GET'])
+def crear_form():
+    return render_template('clases/crear.html')
+
 @clases_bp.route('/clases', methods=['POST'])
 def crear():
-    data = request.json
-    codigo = crear_clase(data['nombre'], data.get('descripcion'), data['profesor_id'])
-    return jsonify({'mensaje': 'Clase creada', 'codigo': codigo}), 201
+    return redirect(url_for('main.index'))
 
-@clases_bp.route('/clases/profesor/<int:profesor_id>', methods=['GET'])
-def listar_profesor(profesor_id):
-    clases = get_clases_profesor(profesor_id)
-    return jsonify(clases)
+@clases_bp.route('/clases/unirse', methods=['GET'])
+def unirse_form():
+    return render_template('clases/unirse.html')
 
 @clases_bp.route('/clases/unirse', methods=['POST'])
 def unirse():
-    data = request.json
-    clase = get_clase_by_codigo(data['codigo'])
-    if not clase:
-        return jsonify({'error': 'Código inválido'}), 404
-    unirse_a_clase(clase['id'], data['alumno_id'])
-    return jsonify({'mensaje': 'Te uniste a la clase', 'clase': clase}), 200
+    return redirect(url_for('main.index'))
 
-@clases_bp.route('/clases/alumno/<int:alumno_id>', methods=['GET'])
-def listar_alumno(alumno_id):
-    clases = get_clases_alumno(alumno_id)
-    return jsonify(clases)
+@clases_bp.route('/clases/<int:clase_id>', methods=['GET'])
+def detalle(clase_id):
+    clase = {'id': clase_id, 'nombre': 'Clase de prueba', 'descripcion': 'Descripción de prueba'}
+    return render_template('tareas/listado.html', clase=clase, tareas=[], es_profesor=True)

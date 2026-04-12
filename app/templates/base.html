@@ -4,15 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Classroom{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #000000; --surface: #0d0d0d; --surface2: #1a1a1a;
+            --border: rgba(255,255,255,0.1); --border-hover: rgba(255,255,255,0.3);
+            --text: #ffffff; --text-muted: #555555; --text-soft: #999999;
+            --accent: #ffffff; --accent-light: rgba(255,255,255,0.06); --accent-glow: rgba(255,255,255,0.08);
+            --green: #ffffff; --green-bg: rgba(255,255,255,0.06);
+            --red: #ffffff; --red-bg: rgba(255,255,255,0.06);
+            --amber: #ffffff; --amber-bg: rgba(255,255,255,0.06);
+            --radius: 2px; --radius-sm: 2px;
+        }
+        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; }
+
+        /* NAV */
+        nav { background: #000; border-bottom: 1px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .nav-brand { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: 0.15em; text-transform: uppercase; }
+        .nav-brand span { color: var(--text-muted); }
+        .nav-links { display: flex; align-items: center; gap: 8px; }
+        .nav-link { color: var(--text-muted); text-decoration: none; font-size: 13px; padding: 6px 12px; transition: color 0.1s; letter-spacing: 0.05em; }
+        .nav-link:hover { color: #fff; }
+
+        /* LAYOUT */
+        main { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
+        .page-header { margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+        .page-header h1 { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+        .page-header p { color: var(--text-muted); margin-top: 6px; font-size: 13px; letter-spacing: 0.03em; }
+
+        /* CARD */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; transition: border-color 0.15s; }
+        .card:hover { border-color: var(--border-hover); }
+
+        /* BUTTONS */
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: var(--radius-sm); font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.1s; text-decoration: none; border: none; letter-spacing: 0.08em; text-transform: uppercase; }
+        .btn-primary { background: #fff; color: #000; }
+        .btn-primary:hover { background: #e0e0e0; }
+        .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+        .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+
+        /* FORMS */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.1em; text-transform: uppercase; }
+        .form-input, .form-textarea { width: 100%; background: #000; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 14px; outline: none; transition: border-color 0.15s; }
+        .form-input:focus, .form-textarea:focus { border-color: rgba(255,255,255,0.5); }
+        .form-textarea { resize: vertical; min-height: 100px; }
+
+        /* BADGES */
+        .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 0; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); color: var(--text-soft); background: transparent; }
+        .badge-green { border-color: rgba(255,255,255,0.3); color: #fff; }
+        .badge-red { border-color: rgba(255,255,255,0.15); color: var(--text-muted); }
+        .badge-amber { border-color: rgba(255,255,255,0.2); color: var(--text-soft); }
+        .badge-accent { border-color: rgba(255,255,255,0.2); color: var(--text-soft); }
+
+        /* ALERTS */
+        .alert { padding: 12px 16px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 1rem; border: 1px solid var(--border); font-family: 'Space Mono', monospace; letter-spacing: 0.03em; }
+        .alert-success { border-color: rgba(255,255,255,0.3); color: #fff; }
+        .alert-error { border-color: rgba(255,255,255,0.15); color: var(--text-muted); }
+
+        /* MISC */
+        .empty-state { text-align: center; padding: 4rem 1rem; color: var(--text-muted); }
+        .empty-state p { font-size: 13px; letter-spacing: 0.03em; line-height: 1.8; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+        .grid-2 > * { background: #000; }
+        .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+        /* DOT ACCENT — sello Nothing */
+        .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #fff; margin-right: 6px; vertical-align: middle; }
+    </style>
+    {% block extra_styles %}{% endblock %}
 </head>
 <body>
     <nav>
-        <a href="/">Classroom</a>
+        <a href="/" class="nav-brand">class<span>/</span>room</a>
+        <div class="nav-links">{% block nav_links %}{% endblock %}</div>
     </nav>
     <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}{% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}{% endif %}
+        {% endwith %}
         {% block content %}{% endblock %}
     </main>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>
