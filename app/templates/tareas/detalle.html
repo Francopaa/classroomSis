@@ -5,21 +5,77 @@
 <div style="max-width: 640px; margin: 0 auto;">
     <div class="page-header">
         <a href="/clases/{{ tarea.clase_id if tarea else '#' }}" class="btn btn-ghost" style="margin-bottom: 1rem; padding: 6px 12px; font-size: 13px;">← Volver a la clase</a>
-        <h1>{{ tarea.titulo if tarea else 'Tarea no encontrada' }}</h1>
         {% if tarea %}
-        <p>Fecha límite: {{ tarea.fecha_limite }}</p>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <h1>{{ tarea.titulo }}</h1>
+                <p>Fecha límite: {{ tarea.fecha_limite }}</p>
+            </div>
+            {% if not es_profesor %}
+                {% if entrega %}
+                <span class="badge badge-green" style="margin-top: 0.5rem; padding: 4px 12px; font-size: 11px;">Entregada</span>
+                {% else %}
+                <span class="badge badge-red" style="margin-top: 0.5rem; padding: 4px 12px; font-size: 11px;">Pendiente</span>
+                {% endif %}
+            {% endif %}
+        </div>
         {% endif %}
     </div>
 
-    {% if tarea %}
-    <div class="card">
-        <p style="color: var(--text-soft); font-size: 14px;">{{ tarea.descripcion or 'Sin descripción.' }}</p>
-    </div>
-    {% else %}
+    {% if not tarea %}
     <div class="empty-state">
         <p>Esta tarea no existe o fue eliminada.</p>
         <a href="/" class="btn btn-ghost" style="margin-top: 1rem;">Volver al inicio</a>
     </div>
+    {% else %}
+
+    {# Descripción #}
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px;">Descripción</div>
+        <p style="font-size: 14px; color: var(--text-soft); line-height: 1.7;">{{ tarea.descripcion or 'Sin descripción.' }}</p>
+    </div>
+
+    {# Vista alumno: calificación #}
+    {% if not es_profesor %}
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">Calificación</div>
+        {% if calificacion %}
+        <div style="display: flex; align-items: center; gap: 2rem;">
+            <div>
+                <div style="font-family: 'Space Mono', monospace; font-size: 36px; font-weight: 700;">{{ calificacion.nota }}</div>
+                <div style="font-size: 11px; color: var(--text-muted); font-family: 'Space Mono', monospace;">/100</div>
+            </div>
+            {% if calificacion.comentario %}
+            <div style="flex: 1; border-left: 1px solid var(--border); padding-left: 2rem;">
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-family: 'Space Mono', monospace; letter-spacing: 0.05em; text-transform: uppercase;">Comentario</div>
+                <p style="font-size: 14px; color: var(--text-soft); line-height: 1.6;">{{ calificacion.comentario }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% else %}
+        <p style="font-size: 13px; color: var(--text-muted);">
+            {% if entrega %}Entrega recibida. Aún no fue calificada.
+            {% else %}Aún no has entregado esta tarea.{% endif %}
+        </p>
+        {% endif %}
+    </div>
+
+    {# Botón entregar #}
+    <div style="display: flex; justify-content: flex-end;">
+        {% if entrega %}
+        <a href="/tareas/{{ tarea.id }}/entregar" class="btn btn-ghost">Ver mi entrega</a>
+        {% else %}
+        <a href="/tareas/{{ tarea.id }}/entregar" class="btn btn-primary">Entregar tarea →</a>
+        {% endif %}
+    </div>
+
+    {# Vista profesor #}
+    {% else %}
+    <div style="display: flex; justify-content: flex-end;">
+        <a href="/tareas/{{ tarea.id }}/entregas" class="btn btn-primary">Ver entregas →</a>
+    </div>
+    {% endif %}
+
     {% endif %}
 </div>
 {% endblock %}
