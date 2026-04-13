@@ -7,8 +7,16 @@ def crear_form():
     return render_template('clases/crear.html')
 
 @clases_bp.route('/clases', methods=['POST'])
-def crear():
-    return redirect(url_for('main.index'))
+  def crear():
+      from app.routes import get_usuario_actual
+      from app.models.clase import crear_clase
+      usuario = get_usuario_actual()
+      nombre = request.form.get('nombre', '').strip()
+      descripcion = request.form.get('descripcion', '').strip()
+      if not nombre:
+          return redirect(url_for('clases.crear_form'))
+      crear_clase(nombre, descripcion or None, usuario['id'])
+      return redirect(url_for('main.index'))
 
 @clases_bp.route('/clases/unirse', methods=['GET'])
 def unirse_form():
