@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+    from flask import Blueprint, request, render_template, redirect, url_for
 
 clases_bp = Blueprint('clases', __name__)
 
@@ -34,6 +34,21 @@ def unirse_form():
       return redirect(url_for('clases.detalle', clase_id=clase['id']))
 
 @clases_bp.route('/clases/<int:clase_id>', methods=['GET'])
-def detalle(clase_id):
-    clase = {'id': clase_id, 'nombre': 'Clase de prueba', 'descripcion': 'Descripción de prueba'}
-    return render_template('tareas/listado.html', clase=clase, tareas=[], es_profesor=True)
+  def detalle(clase_id):
+      from app.routes import get_usuario_actual
+      from app.models.clase import get_clase_by_id
+      from app.models.tarea import get_tareas_clase
+      from app.models.entrega import get_entrega
+      usuario = get_usuario_actual()
+      clase = get_clase_by_id(clase_id)
+      if not clase:
+          return redirect(url_for('main.index'))
+      es_profesor = clase['profesor_id'] == usuario['id']
+      tareas_raw = get_tareas_clase(clase_id)
+      tareas = []
+      for t in tareas_raw:
+          tarea = dict(t)
+          if not es_profesor:
+              tarea['entregada'] = bool(get_entrega(usuario['id'], t['id']))
+          tareas.append(tarea)
+      return render_template('clases/detalle.html', clase=clase, tareas=tareas, es_profesor=es_profesor)
