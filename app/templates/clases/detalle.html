@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ clase.nombre }}{% endblock %}
+
+{% block nav_links %}
+<span style="font-size: 13px; color: var(--text-muted);">{{ clase.nombre }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <a href="/" class="btn btn-ghost" style="margin-bottom: 1rem; padding: 6px 12px; font-size: 13px;">← Mis clases</a>
+            <h1>{{ clase.nombre }}</h1>
+            <p>
+                {{ clase.descripcion or 'Sin descripción' }}
+                <span style="margin-left: 10px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em;">Código: {{ clase.codigo }}</span>
+            </p>
+        </div>
+        {% if es_profesor %}
+        <a href="/clases/{{ clase.id }}/tareas/crear" class="btn btn-primary" style="margin-top: 2.5rem;">+ Nueva tarea</a>
+        {% endif %}
+    </div>
+</div>
+
+{% if tareas %}
+<div style="display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border);">
+    {% for tarea in tareas %}
+    <a href="/tareas/{{ tarea.id }}" style="text-decoration: none;">
+        <div style="background: #000; display: flex; align-items: center; gap: 1rem; padding: 14px 16px;" onmouseover="this.style.background='#0d0d0d'" onmouseout="this.style.background='#000'">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;">📝</div>
+            <div style="flex: 1; min-width: 0;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+                    <span style="font-size: 14px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ tarea.titulo }}</span>
+                    {% if not es_profesor %}
+                        {% if tarea.entregada %}
+                        <span class="badge badge-green">Entregada</span>
+                        {% else %}
+                        <span class="badge badge-red">Pendiente</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <span style="font-size: 12px; color: var(--text-muted); font-family: 'Space Mono', monospace;">Límite: {{ tarea.fecha_limite }}</span>
+            </div>
+            <span style="color: var(--text-muted); font-size: 18px; flex-shrink: 0;">›</span>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div style="font-size: 36px; margin-bottom: 1rem;">📭</div>
+    <p>No hay tareas publicadas aún.</p>
+    {% if es_profesor %}
+    <a href="/clases/{{ clase.id }}/tareas/crear" class="btn btn-primary" style="margin-top: 1.5rem;">Crear primera tarea</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
