@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Calificar — {{ entrega.alumno_nombre }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 580px; margin: 0 auto;">
+    <div class="page-header">
+        <a href="/tareas/{{ tarea.id }}/entregas" class="btn btn-ghost" style="margin-bottom: 1rem; padding: 6px 12px; font-size: 13px;">← Volver</a>
+        <h1>Calificar entrega</h1>
+        <p>{{ entrega.alumno_nombre }} · {{ tarea.titulo }}</p>
+    </div>
+
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">
+            Entrega del alumno
+            <span style="float: right;">{{ entrega.entregado_en }}</span>
+        </div>
+
+        {% if entrega.contenido %}
+        <div style="margin-bottom: 1rem;">
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-family: 'Space Mono', monospace; letter-spacing: 0.05em; text-transform: uppercase;">Respuesta</div>
+            <div style="background: var(--surface2); border: 1px solid var(--border); padding: 12px 14px; font-size: 14px; color: var(--text-soft); line-height: 1.7; border-radius: var(--radius-sm);">{{ entrega.contenido }}</div>
+        </div>
+        {% endif %}
+
+        {% if entrega.archivo %}
+        <div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-family: 'Space Mono', monospace; letter-spacing: 0.05em; text-transform: uppercase;">Archivo</div>
+            <div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 12px; color: var(--text-soft);">
+                <span>📎</span> {{ entrega.archivo }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not entrega.contenido and not entrega.archivo %}
+        <p style="font-size: 13px; color: var(--text-muted);">El alumno no adjuntó contenido ni archivo.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <form method="POST" action="/entregas/{{ entrega.id }}/calificacion">
+            <div class="form-group">
+                <label class="form-label">Nota <span style="color: var(--text-muted); font-weight: 400;">(0 – 100)</span></label>
+                <input type="number" name="nota" class="form-input" min="0" max="100" step="0.01"
+                    value="{{ calificacion.nota if calificacion else '' }}"
+                    placeholder="ej. 85" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Comentario <span style="color: var(--text-muted); font-weight: 400;">(opcional)</span></label>
+                <textarea name="comentario" class="form-textarea" placeholder="Retroalimentación para el alumno...">{{ calificacion.comentario if calificacion else '' }}</textarea>
+            </div>
+            <hr class="divider">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                {% if calificacion %}
+                <span style="font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted);">Calificación actual: {{ calificacion.nota }}/100</span>
+                {% else %}
+                <span></span>
+                {% endif %}
+                <div style="display: flex; gap: 8px;">
+                    <a href="/tareas/{{ tarea.id }}/entregas" class="btn btn-ghost">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">
+                        {% if calificacion %}Actualizar{% else %}Guardar{% endif %} →
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
