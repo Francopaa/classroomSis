@@ -60,3 +60,8 @@ CREATE TABLE IF NOT EXISTS calificaciones (
     calificado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (entrega_id) REFERENCES entregas(id)
 );
+
+-- Usuarios de prueba (sin login aun)
+INSERT IGNORE INTO usuarios (id, nombre, email, password, rol) VALUES
+(1, 'Prof. Garcia', 'profesor@demo.com', 'demo', 'profesor'),
+(2, 'Ana Lopez', 'alumno@demo.com', 'demo', 'alumno');

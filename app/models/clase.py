@@ -15,12 +15,12 @@ def crear_clase(nombre, descripcion, profesor_id):
     cur.close()
     return codigo
 
-def get_clases_profesor(profesor_id):
+def get_clase_by_id(clase_id):
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM clases WHERE profesor_id = %s", (profesor_id,))
-    clases = cur.fetchall()
+    cur.execute("SELECT * FROM clases WHERE id = %s", (clase_id,))
+    clase = cur.fetchone()
     cur.close()
-    return clases
+    return clase
 
 def get_clase_by_codigo(codigo):
     cur = mysql.connection.cursor()
@@ -29,14 +29,12 @@ def get_clase_by_codigo(codigo):
     cur.close()
     return clase
 
-def unirse_a_clase(clase_id, alumno_id):
+def get_clases_profesor(profesor_id):
     cur = mysql.connection.cursor()
-    cur.execute(
-        "INSERT INTO clase_alumnos (clase_id, alumno_id) VALUES (%s, %s)",
-        (clase_id, alumno_id)
-    )
-    mysql.connection.commit()
+    cur.execute("SELECT * FROM clases WHERE profesor_id = %s ORDER BY creado_en DESC", (profesor_id,))
+    clases = cur.fetchall()
     cur.close()
+    return clases
 
 def get_clases_alumno(alumno_id):
     cur = mysql.connection.cursor()
@@ -44,7 +42,17 @@ def get_clases_alumno(alumno_id):
         SELECT c.* FROM clases c
         JOIN clase_alumnos ca ON c.id = ca.clase_id
         WHERE ca.alumno_id = %s
+        ORDER BY ca.unido_en DESC
     """, (alumno_id,))
     clases = cur.fetchall()
     cur.close()
     return clases
+
+def unirse_a_clase(clase_id, alumno_id):
+    cur = mysql.connection.cursor()
+    cur.execute(
+        "INSERT IGNORE INTO clase_alumnos (clase_id, alumno_id) VALUES (%s, %s)",
+        (clase_id, alumno_id)
+    )
+    mysql.connection.commit()
+    cur.close()

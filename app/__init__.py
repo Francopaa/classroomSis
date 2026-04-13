@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session
 from flask_mysqldb import MySQL
 
 mysql = MySQL()
@@ -9,7 +9,16 @@ def create_app():
 
     mysql.init_app(app)
 
-    # Registrar blueprints
+    @app.context_processor
+    def inject_usuario():
+        try:
+            from app.models.usuario import get_usuario_by_id
+            uid = session.get('usuario_id', 1)
+            usuario = get_usuario_by_id(uid)
+            return {'usuario_actual': usuario}
+        except Exception:
+            return {'usuario_actual': None}
+
     from app.routes import main
     from app.routes.clases import clases_bp
     from app.routes.tareas import tareas_bp

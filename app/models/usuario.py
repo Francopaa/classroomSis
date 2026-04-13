@@ -1,5 +1,12 @@
 from app import mysql
 
+def get_usuario_by_id(usuario_id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM usuarios WHERE id = %s", (usuario_id,))
+    usuario = cur.fetchone()
+    cur.close()
+    return usuario
+
 def get_usuario_by_email(email):
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM usuarios WHERE email = %s", (email,))

@@ -73,13 +73,29 @@
 
         /* DOT ACCENT — sello Nothing */
         .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #fff; margin-right: 6px; vertical-align: middle; }
+        .dev-bar { display: flex; align-items: center; gap: 8px; padding-left: 12px; border-left: 1px solid var(--border); }
+        .dev-label { font-size: 11px; color: var(--text-muted); font-family: 'Space Mono', monospace; letter-spacing: 0.04em; }
+        .dev-switch { font-size: 10px; color: var(--text-muted); font-family: 'Space Mono', monospace; padding: 3px 8px; border: 1px solid var(--border); text-decoration: none; transition: color 0.1s, border-color 0.1s; }
+        .dev-switch:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
     </style>
     {% block extra_styles %}{% endblock %}
 </head>
 <body>
     <nav>
         <a href="/" class="nav-brand">class<span>/</span>room</a>
-        <div class="nav-links">{% block nav_links %}{% endblock %}</div>
+        <div class="nav-links">
+            {% block nav_links %}{% endblock %}
+            {% if usuario_actual %}
+            <div class="dev-bar">
+                <span class="dev-label">{{ usuario_actual.nombre }} · {{ usuario_actual.rol }}</span>
+                {% if usuario_actual.id == 1 %}
+                <a href="/dev/switch/2" class="dev-switch">→ alumno</a>
+                {% else %}
+                <a href="/dev/switch/1" class="dev-switch">→ profesor</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
     </nav>
     <main>
         {% with messages = get_flashed_messages(with_categories=true) %}
