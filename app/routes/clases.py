@@ -8,8 +8,6 @@ def crear_form():
 
 @clases_bp.route('/clases', methods=['POST'])
   def crear():
-      from app.routes import get_usuario_actual
-      from app.models.clase import crear_clase
       usuario = get_usuario_actual()
       nombre = request.form.get('nombre', '').strip()
       descripcion = request.form.get('descripcion', '').strip()
@@ -22,9 +20,18 @@ def crear_form():
 def unirse_form():
     return render_template('clases/unirse.html')
 
+
 @clases_bp.route('/clases/unirse', methods=['POST'])
-def unirse():
-    return redirect(url_for('main.index'))
+  def unirse():
+      usuario = get_usuario_actual()
+      codigo = request.form.get('codigo', '').strip().upper()
+      if not codigo:
+          return render_template('clases/unirse.html', error='Ingresa un código')
+      clase = get_clase_by_codigo(codigo)
+      if not clase:
+          return render_template('clases/unirse.html', error='Código inválido')
+      unirse_a_clase(clase['id'], usuario['id'])
+      return redirect(url_for('clases.detalle', clase_id=clase['id']))
 
 @clases_bp.route('/clases/<int:clase_id>', methods=['GET'])
 def detalle(clase_id):
