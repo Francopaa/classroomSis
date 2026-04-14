@@ -1,19 +1,28 @@
-from flask import Blueprint, request, jsonify
-from app.models.entrega import crear_entrega, get_entrega, get_entregas_tarea
-from app.models.usuario import get_usuarios_clase
-
-entregas_bp = Blueprint('entregas', __name__)
-
-@entregas_bp.route('/tareas/<int:tarea_id>/entregas', methods=['POST'])
-def entregar(tarea_id):
-    data = request.json
-    existente = get_entrega(data['alumno_id'], tarea_id)
-    if existente:
-        return jsonify({'error': 'Ya entregaste esta tarea'}), 400
-    crear_entrega(data.get('contenido'), data.get('archivo'), data['alumno_id'], tarea_id)
-    return jsonify({'mensaje': 'Entrega registrada exitosamente'}), 201
-
-@entregas_bp.route('/tareas/<int:tarea_id>/entregas', methods=['GET'])
-def listar(tarea_id):
-    entregas = get_entregas_tarea(tarea_id)
-    return jsonify(entregas)
+from flask import Blueprint, request, render_template, redirect, url_for                                                                           
+  from app.routes import get_usuario_actual                                                                                                          
+  from app.models.entrega import crear_entrega, get_entrega                                                                                          
+  from app.models.tarea import get_tarea_by_id                                                                                                       
+  from app.models.clase import get_clase_by_id                                                                                                       
+                                                                                                                                                     
+  entregas_bp = Blueprint('entregas', __name__)                                                                                                      
+   
+  @entregas_bp.route('/tareas/<int:tarea_id>/entregar', methods=['GET'])                                                                             
+  def entregar_form(tarea_id):                              
+      usuario = get_usuario_actual()
+      tarea = get_tarea_by_id(tarea_id)
+      clase = get_clase_by_id(tarea['clase_id'])                                                                                                     
+      entrega = get_entrega(usuario['id'], tarea_id)
+      return render_template('entregas/entregar.html', tarea=tarea, clase=clase, entrega=entrega)                                                    
+                                                                                                                                                     
+  @entregas_bp.route('/tareas/<int:tarea_id>/entregas', methods=['POST'])                                                                            
+  def entregar(tarea_id):                                                                                                                            
+      usuario = get_usuario_actual()                                                                                                                 
+      existente = get_entrega(usuario['id'], tarea_id)      
+      if not existente:                                                                                                                              
+          crear_entrega(
+              request.form.get('contenido'),                                                                                                         
+              request.form.get('archivo'),                  
+              usuario['id'],
+              tarea_id                                                                                                                               
+          )
+      return redirect(url_for('entregas.entregar_form', tarea_id=tarea_id))
