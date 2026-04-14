@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, redirect, url_for
-from app.routes import get_usuario_actual
+from app.routes import get_usuario_actual, login_required
 from app.models.tarea import crear_tarea, get_tarea_by_id
 from app.models.clase import get_clase_by_id
 from app.models.entrega import get_entrega
@@ -8,11 +8,13 @@ from app.models.calificacion import get_calificacion_by_entrega
 tareas_bp = Blueprint('tareas', __name__)
 
 @tareas_bp.route('/clases/<int:clase_id>/tareas/crear', methods=['GET'])
+@login_required
 def crear_form(clase_id):
     clase = get_clase_by_id(clase_id)
     return render_template('tareas/crear.html', clase=clase)
 
 @tareas_bp.route('/clases/<int:clase_id>/tareas', methods=['POST'])
+@login_required
 def crear(clase_id):
     data = request.form
     if not data.get('titulo') or not data.get('fecha') or not data.get('hora'):
@@ -22,6 +24,7 @@ def crear(clase_id):
     return redirect(url_for('clases.detalle', clase_id=clase_id))
 
 @tareas_bp.route('/tareas/<int:tarea_id>', methods=['GET'])
+@login_required
 def detalle(tarea_id):
     usuario = get_usuario_actual()
     tarea = get_tarea_by_id(tarea_id)

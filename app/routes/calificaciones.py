@@ -3,11 +3,12 @@ from app.models.calificacion import calificar_entrega, get_calificacion_by_entre
 from app.models.entrega import get_entrega_by_id
 from app.models.tarea import get_tarea_by_id
 from app.models.clase import get_clase_by_id
-from app.routes import get_usuario_actual
+from app.routes import get_usuario_actual, login_required
 
 calificaciones_bp = Blueprint('calificaciones', __name__)
 
 @calificaciones_bp.route('/entregas/<int:entrega_id>/calificar', methods=['GET'])
+@login_required
 def calificar_form(entrega_id):
     entrega = get_entrega_by_id(entrega_id)
     tarea = get_tarea_by_id(entrega['tarea_id'])
@@ -16,6 +17,7 @@ def calificar_form(entrega_id):
         entrega=entrega, tarea=tarea, calificacion=calificacion)
 
 @calificaciones_bp.route('/entregas/<int:entrega_id>/calificacion', methods=['POST'])
+@login_required
 def calificar(entrega_id):
     nota = request.form.get('nota')
     comentario = request.form.get('comentario')
@@ -26,6 +28,7 @@ def calificar(entrega_id):
     return redirect(url_for('entregas.listado', tarea_id=entrega['tarea_id']))
 
 @calificaciones_bp.route('/clases/<int:clase_id>/mis-calificaciones', methods=['GET'])
+@login_required
 def mis_calificaciones(clase_id):
     usuario = get_usuario_actual()
     clase = get_clase_by_id(clase_id)

@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS calificaciones (
     FOREIGN KEY (entrega_id) REFERENCES entregas(id)
 );
 
--- Usuarios de prueba (sin login aun)
+-- Usuarios de prueba (contraseña: demo)
 INSERT IGNORE INTO usuarios (id, nombre, email, password, rol) VALUES
-(1, 'Prof. Garcia', 'profesor@demo.com', 'demo', 'profesor'),
-(2, 'Ana Lopez', 'alumno@demo.com', 'demo', 'alumno');
+(1, 'Prof. Garcia', 'profesor@demo.com', 'scrypt:32768:8:1$gw9c6LSv0W9kMGmF$b305686127b9e06d3a9bddf1c1b2b5bf3af1049541ecbd4fcd260501969803a0128c1467c612367f77eacd0d6fb45853968b4439383fa045ad2365812c3c5ba9', 'profesor'),
+(2, 'Ana Lopez', 'alumno@demo.com', 'scrypt:32768:8:1$gw9c6LSv0W9kMGmF$b305686127b9e06d3a9bddf1c1b2b5bf3af1049541ecbd4fcd260501969803a0128c1467c612367f77eacd0d6fb45853968b4439383fa045ad2365812c3c5ba9', 'alumno');

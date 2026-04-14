@@ -88,11 +88,7 @@
             {% if usuario_actual %}
             <div class="dev-bar">
                 <span class="dev-label">{{ usuario_actual.nombre }} · {{ usuario_actual.rol }}</span>
-                {% if usuario_actual.id == 1 %}
-                <a href="/dev/switch/2" class="dev-switch">→ alumno</a>
-                {% else %}
-                <a href="/dev/switch/1" class="dev-switch">→ profesor</a>
-                {% endif %}
+                <a href="/logout" class="dev-switch">salir</a>
             </div>
             {% endif %}
         </div>

@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from flask import Blueprint, request, render_template, redirect, url_for, send_from_directory, current_app, flash
-from app.routes import get_usuario_actual
+from app.routes import get_usuario_actual, login_required
 from app.models.entrega import crear_entrega, get_entrega, get_alumnos_con_entrega
 from app.models.tarea import get_tarea_by_id
 from app.models.clase import get_clase_by_id
@@ -9,6 +9,7 @@ from app.models.clase import get_clase_by_id
 entregas_bp = Blueprint('entregas', __name__)
 
 @entregas_bp.route('/tareas/<int:tarea_id>/entregar', methods=['GET'])
+@login_required
 def entregar_form(tarea_id):
     usuario = get_usuario_actual()
     tarea = get_tarea_by_id(tarea_id)
@@ -17,6 +18,7 @@ def entregar_form(tarea_id):
     return render_template('entregas/entregar.html', tarea=tarea, clase=clase, entrega=entrega)
 
 @entregas_bp.route('/tareas/<int:tarea_id>/entregas', methods=['POST'])
+@login_required
 def entregar(tarea_id):
     usuario = get_usuario_actual()
     tarea = get_tarea_by_id(tarea_id)
@@ -46,6 +48,7 @@ def descargar(filename):
     return send_from_directory(upload_dir, filename)
 
 @entregas_bp.route('/tareas/<int:tarea_id>/entregas', methods=['GET'])
+@login_required
 def listado(tarea_id):
     tarea = get_tarea_by_id(tarea_id)
     clase = get_clase_by_id(tarea['clase_id'])

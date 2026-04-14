@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, redirect, url_for
-from app.routes import get_usuario_actual
+from app.routes import get_usuario_actual, login_required
 from app.models.clase import crear_clase, get_clase_by_id, get_clase_by_codigo, unirse_a_clase
 from app.models.tarea import get_tareas_clase
 from app.models.entrega import get_entrega
@@ -7,10 +7,12 @@ from app.models.entrega import get_entrega
 clases_bp = Blueprint('clases', __name__)
 
 @clases_bp.route('/clases/crear', methods=['GET'])
+@login_required
 def crear_form():
     return render_template('clases/crear.html')
 
 @clases_bp.route('/clases', methods=['POST'])
+@login_required
 def crear():
     usuario = get_usuario_actual()
     nombre = request.form.get('nombre', '').strip()
@@ -21,10 +23,12 @@ def crear():
     return redirect(url_for('main.index'))
 
 @clases_bp.route('/clases/unirse', methods=['GET'])
+@login_required
 def unirse_form():
     return render_template('clases/unirse.html')
 
 @clases_bp.route('/clases/unirse', methods=['POST'])
+@login_required
 def unirse():
     usuario = get_usuario_actual()
     codigo = request.form.get('codigo', '').strip().upper()
@@ -37,6 +41,7 @@ def unirse():
     return redirect(url_for('clases.detalle', clase_id=clase['id']))
 
 @clases_bp.route('/clases/<int:clase_id>', methods=['GET'])
+@login_required
 def detalle(clase_id):
     usuario = get_usuario_actual()
     clase = get_clase_by_id(clase_id)

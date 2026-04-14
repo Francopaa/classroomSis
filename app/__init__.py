@@ -13,7 +13,9 @@ def create_app():
     def inject_usuario():
         try:
             from app.models.usuario import get_usuario_by_id
-            uid = session.get('usuario_id', 1)
+            uid = session.get('usuario_id')
+            if not uid:
+                return {'usuario_actual': None}
             usuario = get_usuario_by_id(uid)
             return {'usuario_actual': usuario}
         except Exception:
@@ -24,11 +26,13 @@ def create_app():
     from app.routes.tareas import tareas_bp
     from app.routes.entregas import entregas_bp
     from app.routes.calificaciones import calificaciones_bp
+    from app.routes.auth import auth_bp
 
     app.register_blueprint(main)
     app.register_blueprint(clases_bp)
     app.register_blueprint(tareas_bp)
     app.register_blueprint(entregas_bp)
     app.register_blueprint(calificaciones_bp)
+    app.register_blueprint(auth_bp)
 
     return app
