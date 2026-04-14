@@ -1,4 +1,5 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+import os
+from flask import Blueprint, request, render_template, redirect, url_for, send_from_directory, current_app
 from app.routes import get_usuario_actual
 from app.models.entrega import crear_entrega, get_entrega, get_alumnos_con_entrega
 from app.models.tarea import get_tarea_by_id
@@ -19,13 +20,25 @@ def entregar(tarea_id):
     usuario = get_usuario_actual()
     existente = get_entrega(usuario['id'], tarea_id)
     if not existente:
+        nombre_archivo = None
+        file = request.files.get('archivo')
+        if file and file.filename:
+            upload_dir = os.path.join(current_app.root_path, 'uploads')
+            os.makedirs(upload_dir, exist_ok=True)
+            nombre_archivo = f"{usuario['id']}_{tarea_id}_{file.filename}"
+            file.save(os.path.join(upload_dir, nombre_archivo))
         crear_entrega(
             request.form.get('contenido'),
-            request.form.get('archivo'),
+            nombre_archivo,
             usuario['id'],
             tarea_id
         )
     return redirect(url_for('entregas.entregar_form', tarea_id=tarea_id))
+
+@entregas_bp.route('/uploads/<path:filename>')
+def descargar(filename):
+    upload_dir = os.path.join(current_app.root_path, 'uploads')
+    return send_from_directory(upload_dir, filename)
 
 @entregas_bp.route('/tareas/<int:tarea_id>/entregas', methods=['GET'])
 def listado(tarea_id):

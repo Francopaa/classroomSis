@@ -38,9 +38,9 @@
         {% if entrega.archivo %}
         <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label">Archivo adjunto</label>
-            <div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 12px; color: var(--text-soft);">
-                <span>📎</span> {{ entrega.archivo }}
-            </div>
+            <a href="/uploads/{{ entrega.archivo }}" target="_blank" style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 12px; color: var(--text-soft); text-decoration: none;">
+                📎 {{ entrega.archivo }} <span style="margin-left: auto; font-size: 10px; color: var(--text-muted);">Descargar →</span>
+            </a>
         </div>
         {% endif %}
     </div>

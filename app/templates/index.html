@@ -2,7 +2,9 @@
 {% block title %}Classroom — Inicio{% endblock %}
 
 {% block nav_links %}
+{% if usuario_actual and usuario_actual.rol == 'profesor' %}
 <a href="/clases/crear" class="btn btn-primary" style="padding: 7px 14px; font-size: 13px;">+ Nueva clase</a>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -31,7 +33,9 @@
     <div style="font-size: 36px; margin-bottom: 1rem;">🎓</div>
     <p>No tienes clases aún.<br>Crea una o únete con un código.</p>
     <div style="display: flex; gap: 8px; justify-content: center; margin-top: 1.5rem;">
+        {% if usuario_actual and usuario_actual.rol == 'profesor' %}
         <a href="/clases/crear" class="btn btn-primary">Crear clase</a>
+        {% endif %}
         <a href="/clases/unirse" class="btn btn-ghost">Unirse con código</a>
     </div>
 </div>
@@ -39,7 +43,9 @@
 
 {% if clases %}
 <div style="margin-top: 1.5rem; display: flex; gap: 8px;">
+    {% if usuario_actual and usuario_actual.rol == 'profesor' %}
     <a href="/clases/crear" class="btn btn-ghost">+ Crear clase</a>
+    {% endif %}
     <a href="/clases/unirse" class="btn btn-ghost">Unirse con código</a>
 </div>
 {% endif %}

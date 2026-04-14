@@ -15,9 +15,10 @@ def crear_form(clase_id):
 @tareas_bp.route('/clases/<int:clase_id>/tareas', methods=['POST'])
 def crear(clase_id):
     data = request.form
-    if not data.get('titulo') or not data.get('fecha_limite'):
+    if not data.get('titulo') or not data.get('fecha') or not data.get('hora'):
         return redirect(url_for('tareas.crear_form', clase_id=clase_id))
-    crear_tarea(data['titulo'], data.get('descripcion'), data['fecha_limite'], clase_id)
+    fecha_limite = data['fecha'] + ' ' + data['hora']
+    crear_tarea(data['titulo'], data.get('descripcion'), fecha_limite, clase_id)
     return redirect(url_for('clases.detalle', clase_id=clase_id))
 
 @tareas_bp.route('/tareas/<int:tarea_id>', methods=['GET'])

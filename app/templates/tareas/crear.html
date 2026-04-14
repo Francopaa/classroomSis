@@ -21,7 +21,10 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Fecha límite *</label>
-                <input type="datetime-local" name="fecha_limite" class="form-input" required>
+                <div style="display: flex; gap: 8px;">
+                    <input type="date" name="fecha" class="form-input" required style="flex: 1;">
+                    <input type="time" name="hora" class="form-input" required style="width: 130px;">
+                </div>
             </div>
             <hr class="divider">
             <div style="display: flex; justify-content: flex-end; gap: 8px;">
