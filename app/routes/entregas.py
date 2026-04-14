@@ -26,3 +26,27 @@ from flask import Blueprint, request, render_template, redirect, url_for
               tarea_id                                                                                                                               
           )
       return redirect(url_for('entregas.entregar_form', tarea_id=tarea_id))
+    @entregas_bp.route('/tareas/<int:tarea_id>/entregas', methods=['GET'])                                                                             
+  def listado(tarea_id):
+      tarea = get_tarea_by_id(tarea_id)                                                                                                              
+      clase = get_clase_by_id(tarea['clase_id'])            
+      alumnos = get_alumnos_con_entrega(tarea_id, clase['id'])                                                                                       
+   
+      alumnos_entregaron = []                                                                                                                        
+      alumnos_pendientes = []                               
+      for a in alumnos:                                                                                                                              
+          if a['entrega_id']:                               
+              alumnos_entregaron.append({                                                                                                            
+                  'id': a['entrega_id'],
+                  'alumno_nombre': a['nombre'],                                                                                                      
+                  'entregado_en': a['entregado_en'],                                                                                                 
+                  'calificada': a['nota'] is not None,
+                  'nota': a['nota']                                                                                                                  
+              })                                            
+          else:                                                                                                                                      
+              alumnos_pendientes.append({'nombre': a['nombre']})
+                                                                                                                                                     
+      return render_template('entregas/listado.html',
+          tarea=tarea, clase=clase,                                                                                                                  
+          alumnos_entregaron=alumnos_entregaron,            
+          alumnos_pendientes=alumnos_pendientes)
