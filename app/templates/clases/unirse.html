@@ -1,24 +1,26 @@
 {% extends "base.html" %}
 
-{% block title %}{{ clase.nombre }}{% endblock %}
+{% block title %}Unirse a una clase{% endblock %}
 
 {% block content %}
-<section class="classroom-detail">
-    <h1>{{ clase.nombre }}</h1>
-    <p><strong>Código:</strong> {{ clase.codigo }}</p>
-    <p>{{ clase.descripcion }}</p>
+<div class="page-header">
+    <h1>Unirse a una clase</h1>
+    <p>Ingresa el código que te compartió tu profesor</p>
+</div>
 
-    <hr>
+{% if error %}
+<div class="alert alert-error">{{ error }}</div>
+{% endif %}
 
-    <h3>Tareas</h3>
-    {% if tareas %}
-        <ul>
-            {% for tarea in tareas %}
-                <li>{{ tarea.titulo }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No hay tareas todavía.</p>
-    {% endif %}
-</section>
+<div class="card" style="max-width: 420px;">
+    <form method="POST" action="/clases/unirse">
+        <div class="form-group">
+            <label class="form-label">Código de clase</label>
+            <input type="text" name="codigo" class="form-input"
+                placeholder="Ej: ABC123" autocomplete="off" autofocus
+                style="text-transform: uppercase; letter-spacing: 0.15em; font-family: 'Space Mono', monospace;">
+        </div>
+        <button type="submit" class="btn btn-primary">Unirse</button>
+    </form>
+</div>
 {% endblock %}
