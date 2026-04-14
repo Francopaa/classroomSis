@@ -9,6 +9,8 @@ services:
       - .:/app
     env_file:
       - .env
+    environment:
+      - TZ=America/La_Paz
     depends_on:
       db:
         condition: service_healthy
@@ -19,6 +21,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: classroom
+      TZ: America/La_Paz
     ports:
       - "3307:3306"
     volumes:

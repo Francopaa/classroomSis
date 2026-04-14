@@ -1,5 +1,6 @@
 import os
-from flask import Blueprint, request, render_template, redirect, url_for, send_from_directory, current_app
+from datetime import datetime
+from flask import Blueprint, request, render_template, redirect, url_for, send_from_directory, current_app, flash
 from app.routes import get_usuario_actual
 from app.models.entrega import crear_entrega, get_entrega, get_alumnos_con_entrega
 from app.models.tarea import get_tarea_by_id
@@ -18,6 +19,10 @@ def entregar_form(tarea_id):
 @entregas_bp.route('/tareas/<int:tarea_id>/entregas', methods=['POST'])
 def entregar(tarea_id):
     usuario = get_usuario_actual()
+    tarea = get_tarea_by_id(tarea_id)
+    if tarea['fecha_limite'] and datetime.now() > tarea['fecha_limite']:
+        flash('El plazo de entrega ya venció.', 'error')
+        return redirect(url_for('entregas.entregar_form', tarea_id=tarea_id))
     existente = get_entrega(usuario['id'], tarea_id)
     if not existente:
         nombre_archivo = None
