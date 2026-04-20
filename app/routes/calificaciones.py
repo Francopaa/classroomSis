@@ -21,9 +21,13 @@ def calificar_form(entrega_id):
 def calificar(entrega_id):
     nota = request.form.get('nota')
     comentario = request.form.get('comentario')
-    if not nota or not (0 <= float(nota) <= 100):
+    try:
+        nota_float = float(nota) if nota else None
+    except ValueError:
+        nota_float = None
+    if nota_float is None or not (0 <= nota_float <= 100):
         return redirect(url_for('calificaciones.calificar_form', entrega_id=entrega_id))
-    calificar_entrega(entrega_id, float(nota), comentario)
+    calificar_entrega(entrega_id, nota_float, comentario)
     entrega = get_entrega_by_id(entrega_id)
     return redirect(url_for('entregas.listado', tarea_id=entrega['tarea_id']))
 
