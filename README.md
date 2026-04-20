@@ -13,4 +13,4 @@ Sistema de gestión de clases y tareas desarrollado con Flask y MySQL.
 docker compose up
 ```
 
-Abrir en el navegador: http://localhost:5001
+Abrir en el navegador: http://localhost:5001 !
